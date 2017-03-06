@@ -7,7 +7,7 @@ stages:
 test:
   stage: test
   script:
-    - ls /
+    - ls -alrth /
 
 # deploy_staging:
 #   stage: deploy
