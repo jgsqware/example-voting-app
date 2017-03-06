@@ -7,7 +7,7 @@ stages:
 test:
   stage: test
   script:
-    - ls -alrth /my-app
+    - ls -alrth /.docker
 
 # deploy_staging:
 #   stage: deploy
