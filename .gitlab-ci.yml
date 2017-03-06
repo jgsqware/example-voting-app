@@ -7,7 +7,7 @@ stages:
 test:
   stage: test
   script:
-    - ls -alrth /
+    - ls -alrth /my-app
 
 # deploy_staging:
 #   stage: deploy
