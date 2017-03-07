@@ -28,7 +28,7 @@ deploy_review:
     - docker stack deploy --compose-file docker-stack.yml $CI_ENVIRONMENT_SLUG
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG_vote.machine.local
+    url: https://${CI_ENVIRONMENT_SLUG}_vote.machine.local
   only:
     - branches
   except:
