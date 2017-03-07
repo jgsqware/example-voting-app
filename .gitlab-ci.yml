@@ -7,14 +7,14 @@ deploy_staging:
   stage: deploy
   script:
     - export DOCKER_TLS_VERIFY="1"
-    - export DOCKER_HOST="tcp://192.168.99.103:2376"
+    - export DOCKER_HOST="tcp://manager.machine.local:2376"
     - export DOCKER_CERT_PATH="/.docker/machine/machines/manager1"
     - export DOCKER_MACHINE_NAME="manager1"
-    - docker stack deploy --compose-file docker-stack.yml vote
+    - docker stack deploy --compose-file docker-stack.yml voting-app
 
   environment:
     name: staging
-    url: http://192.168.99.103:5000
+    url: http://voting-app_vote.machine.local
   only:
   - master
 
@@ -22,14 +22,30 @@ deploy_review:
   stage: deploy
   script:
     - export DOCKER_TLS_VERIFY="1"
-    - export DOCKER_HOST="tcp://192.168.99.103:2376"
+    - export DOCKER_HOST="tcp://manager.machine.local:2376"
     - export DOCKER_CERT_PATH="/.docker/machine/machines/manager1"
     - export DOCKER_MACHINE_NAME="manager1"
     - docker stack deploy --compose-file docker-stack.yml $CI_ENVIRONMENT_SLUG
   environment:
     name: review/$CI_BUILD_REF_NAME
     url: http://${CI_ENVIRONMENT_SLUG}_vote.machine.local
+    on_stop: stop_review
   only:
     - branches
   except:
     - master
+
+stop_review:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - export DOCKER_TLS_VERIFY="1"
+    - export DOCKER_HOST="tcp://manager.machine.local:2376"
+    - export DOCKER_CERT_PATH="/.docker/machine/machines/manager1"
+    - export DOCKER_MACHINE_NAME="manager1"
+    - docker stack deploy rm $CI_ENVIRONMENT_SLUG
+  when: manual
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
