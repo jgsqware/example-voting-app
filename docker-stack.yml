@@ -26,12 +26,15 @@ services:
   vote:
     image: dockersamples/examplevotingapp_vote:before
     ports:
-      - 5000:80
+      - "80"
     networks:
       - frontend
+      - traefik-net
     depends_on:
       - redis
     deploy:
+      labels:
+        - "traefik.port=80"
       replicas: 2
       update_config:
         parallelism: 2
@@ -40,12 +43,15 @@ services:
   result:
     image: dockersamples/examplevotingapp_result:before
     ports:
-      - 5001:80
+      - "80"
     networks:
       - backend
+      - traefik-net
     depends_on:
       - db
     deploy:
+      labels:
+        - "traefik.port=80"
       replicas: 1
       update_config:
         parallelism: 2
@@ -73,7 +79,7 @@ services:
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
-      - "8080:8080"
+      - "8080"
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -82,8 +88,11 @@ services:
         constraints: [node.role == manager]
 
 networks:
+  traefik-net:
+    external:
+      name: traefik-net
   frontend:
   backend:
-
+  
 volumes:
   db-data:
