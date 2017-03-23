@@ -14,7 +14,7 @@ deploy_staging:
 
   environment:
     name: staging
-    url: http://voting-app_vote.machine.local
+    url: http://voting-app-vote.machine.local
   only:
   - master
 
@@ -28,7 +28,7 @@ deploy_review:
     - docker stack deploy --compose-file docker-stack.yml $CI_ENVIRONMENT_SLUG
   environment:
     name: review/$CI_BUILD_REF_NAME
-    url: http://${CI_ENVIRONMENT_SLUG}_vote.machine.local
+    url: http://${CI_ENVIRONMENT_SLUG}-vote.machine.local
     on_stop: stop_review
   only:
     - branches
